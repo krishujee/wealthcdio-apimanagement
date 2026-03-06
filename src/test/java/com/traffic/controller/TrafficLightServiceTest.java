@@ -71,7 +71,7 @@ public class TrafficLightServiceTest {
                 assertThrows(IllegalStateException.class, () ->
                         service.changeLight(Direction.NORTH, LightState.GREEN)
                 );
-        assertEquals("System is paused", exception.getMessage());
+        assertEquals("System is paused now", exception.getMessage());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TrafficLightServiceTest {
                 assertThrows(IllegalStateException.class, () ->
                         service.changeLight(Direction.NORTH, LightState.GREEN)
                 );
-        assertEquals("Conflict detected EAST/WEST GREEN", exception.getMessage());
+        assertEquals("Conflict detected for EAST/WEST GREEN", exception.getMessage());
     }
 
     @Test
@@ -91,7 +91,7 @@ public class TrafficLightServiceTest {
                 assertThrows(IllegalStateException.class, () ->
                         service.changeLight(Direction.EAST, LightState.GREEN)
                 );
-        assertEquals("Conflict detected NORTH/SOUTH GREEN", exception.getMessage());
+        assertEquals("Conflict detected for NORTH/SOUTH GREEN", exception.getMessage());
     }
 
     @Test
