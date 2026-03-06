@@ -9,35 +9,35 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/traffic")
+
+@RestController("/traffic-controls")
 @RequiredArgsConstructor
 public class TrafficController {
     private final TrafficLightService service;
 
     @GetMapping("/state")
     public List<TrafficStateResponseDTO> getState() {
-        return service.getCurrentState();
+        return service.getCurrentStateDirections();
     }
 
     @GetMapping("/history")
     public List<HistoryResponseDTO> getHistory() {
-        return service.getHistory();
+        return service.getHistoryList();
     }
 
-    @PostMapping("/change")
+    @PostMapping("/changeing")
     public void changeLight(@RequestBody TrafficLightChangeRequestDTO request) {
         service.changeLight(request.getDirection(), request.getState());
     }
 
-    @PostMapping("/pause")
+    @PostMapping("/pauseLight")
     public void pause() {
         service.pauseSystem();
     }
 
-    @PostMapping("/resume")
+    @PostMapping("/resumeLight")
     public void resume() {
-        service.resumeSystem();
+        service.resumeTrafficLightSystem();
     }
 
     @GetMapping("/status")

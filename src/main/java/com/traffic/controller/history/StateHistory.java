@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class StateHistory {
-        private String event;
+        private String eventType;
         private long timestamp;
 
-        public StateHistory(String event) {
-            this.event = event;
+        public StateHistory(String eventType) {
+            this.eventType = eventType;
             this.timestamp = System.currentTimeMillis();
         }
 

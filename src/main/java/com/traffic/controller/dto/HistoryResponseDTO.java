@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public class HistoryResponseDTO {
-    private String event;
+    private String eventType;
     private long timestamp;
 
     public HistoryResponseDTO(String event, long timestamp) {
-        this.event = event;
+        this.eventType = event;
         this.timestamp = timestamp;
     }
 }

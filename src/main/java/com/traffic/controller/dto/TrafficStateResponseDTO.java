@@ -1,7 +1,7 @@
 package com.traffic.controller.dto;
 
-import com.traffic.controller.model.Direction;
-import com.traffic.controller.model.LightState;
+import com.traffic.controller.model.ListOfDirection;
+import com.traffic.controller.model.LightTypes;
 import lombok.*;
 
 @Getter
@@ -10,8 +10,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrafficStateResponseDTO {
-    private Direction direction;
-    private LightState state;
+    private ListOfDirection direction;
+    private LightTypes state;
     private long lastUpdated;
 
 

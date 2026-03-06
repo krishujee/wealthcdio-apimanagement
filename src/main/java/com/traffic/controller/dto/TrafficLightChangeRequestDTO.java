@@ -1,7 +1,7 @@
 package com.traffic.controller.dto;
 
-import com.traffic.controller.model.Direction;
-import com.traffic.controller.model.LightState;
+import com.traffic.controller.model.ListOfDirection;
+import com.traffic.controller.model.LightTypes;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class TrafficLightChangeRequestDTO {
-
-    private Direction direction;
-    private LightState state;
+    private ListOfDirection direction;
+    private LightTypes state;
 
 }

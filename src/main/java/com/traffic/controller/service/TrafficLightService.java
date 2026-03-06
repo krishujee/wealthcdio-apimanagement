@@ -4,8 +4,8 @@ import com.traffic.controller.dto.HistoryResponseDTO;
 import com.traffic.controller.dto.TrafficStateResponseDTO;
 import com.traffic.controller.history.StateHistory;
 import com.traffic.controller.mapper.TrafficMapper;
-import com.traffic.controller.model.Direction;
-import com.traffic.controller.model.LightState;
+import com.traffic.controller.model.ListOfDirection;
+import com.traffic.controller.model.LightTypes;
 import com.traffic.controller.model.TrafficLight;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class TrafficLightService {
-    private final Map<Direction, TrafficLight> lights = new ConcurrentHashMap<>();
+    private final Map<ListOfDirection, TrafficLight> lights = new ConcurrentHashMap<>();
     private final Queue<StateHistory> history = new ConcurrentLinkedQueue<>();
     private final Lock lock = new ReentrantLock();
     private volatile boolean paused = false;
@@ -27,20 +27,20 @@ public class TrafficLightService {
 
     public TrafficLightService(TrafficMapper mapper) {
         this.mapper = mapper;
-        lights.put(Direction.NORTH, new TrafficLight(Direction.NORTH, LightState.RED));
-        lights.put(Direction.SOUTH, new TrafficLight(Direction.SOUTH, LightState.RED));
-        lights.put(Direction.EAST, new TrafficLight(Direction.EAST, LightState.RED));
-        lights.put(Direction.WEST, new TrafficLight(Direction.WEST, LightState.RED));
+        lights.put(ListOfDirection.NORTH, new TrafficLight(ListOfDirection.NORTH, LightTypes.RED));
+        lights.put(ListOfDirection.SOUTH, new TrafficLight(ListOfDirection.SOUTH, LightTypes.RED));
+        lights.put(ListOfDirection.EAST, new TrafficLight(ListOfDirection.EAST, LightTypes.RED));
+        lights.put(ListOfDirection.WEST, new TrafficLight(ListOfDirection.WEST, LightTypes.RED));
         history.add(new StateHistory("Traffic system initialized"));
     }
 
-    public void changeLight(Direction direction, LightState newState) {
+    public void changeLight(ListOfDirection direction, LightTypes newState) {
         lock.lock();
         try {
             if (paused) {
-                throw new IllegalStateException("System is paused");
+                throw new IllegalStateException("System is paused now");
             }
-            if (newState == LightState.GREEN) {
+            if (newState == LightTypes.GREEN) {
                 validateConflict(direction);
             }
             TrafficLight light = lights.get(direction);
@@ -51,28 +51,26 @@ public class TrafficLightService {
         }
     }
 
-    private void validateConflict(Direction direction) {
-
-        if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-            if (lights.get(Direction.EAST).getState() == LightState.GREEN ||
-                    lights.get(Direction.WEST).getState() == LightState.GREEN) {
-                throw new IllegalStateException("Conflict detected EAST/WEST GREEN");
+    private void validateConflict(ListOfDirection direction) {
+        if (direction == ListOfDirection.NORTH || direction == ListOfDirection.SOUTH) {
+            if (lights.get(ListOfDirection.EAST).getState() == LightTypes.GREEN ||
+                    lights.get(ListOfDirection.WEST).getState() == LightTypes.GREEN) {
+                throw new IllegalStateException("Conflict detected for EAST/WEST GREEN");
             }
         }
-
-        if (direction == Direction.EAST || direction == Direction.WEST) {
-            if (lights.get(Direction.NORTH).getState() == LightState.GREEN ||
-                    lights.get(Direction.SOUTH).getState() == LightState.GREEN) {
-                throw new IllegalStateException("Conflict detected NORTH/SOUTH GREEN");
+        if (direction == ListOfDirection.EAST || direction == ListOfDirection.WEST) {
+            if (lights.get(ListOfDirection.NORTH).getState() == LightTypes.GREEN ||
+                    lights.get(ListOfDirection.SOUTH).getState() == LightTypes.GREEN) {
+                throw new IllegalStateException("Conflict detected for NORTH/SOUTH GREEN");
             }
         }
     }
 
-    public List<TrafficStateResponseDTO> getCurrentState() {
+    public List<TrafficStateResponseDTO> getCurrentStateDirections() {
         return lights.values().stream().map(mapper::toTrafficStateDTO).toList();
     }
 
-    public List<HistoryResponseDTO> getHistory() {
+    public List<HistoryResponseDTO> getHistoryList() {
         return history.stream().map(mapper::toHistoryDTO).toList();
     }
 
@@ -81,7 +79,7 @@ public class TrafficLightService {
         history.add(new StateHistory("System paused"));
     }
 
-    public void resumeSystem() {
+    public void resumeTrafficLightSystem() {
         paused = false;
         history.add(new StateHistory("System resumed"));
     }
@@ -90,7 +88,7 @@ public class TrafficLightService {
         return paused;
     }
 
-    public Map<Direction, TrafficLight> getLights() {
+    public Map<ListOfDirection, TrafficLight> getLightDetails() {
         return lights;
     }
 

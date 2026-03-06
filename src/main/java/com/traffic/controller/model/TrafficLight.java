@@ -1,26 +1,26 @@
 package com.traffic.controller.model;
 
 public class TrafficLight {
-    private Direction direction;
-    private LightState state;
+    private ListOfDirection direction;
+    private LightTypes state;
     private long lastUpdated;
 
-    public TrafficLight(Direction direction, LightState state) {
+    public TrafficLight(ListOfDirection direction, LightTypes state) {
         this.direction = direction;
         this.state = state;
         this.lastUpdated = System.currentTimeMillis();
     }
 
-    public synchronized void changeState(LightState newState) {
+    public synchronized void changeState(LightTypes newState) {
         this.state = newState;
         this.lastUpdated = System.currentTimeMillis();
     }
 
-    public Direction getDirection() {
+    public ListOfDirection getDirection() {
         return direction;
     }
 
-    public LightState getState() {
+    public LightTypes getState() {
         return state;
     }
 
