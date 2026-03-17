@@ -4,8 +4,8 @@ package com.traffic.controller;
 import com.traffic.controller.dto.HistoryResponseDTO;
 import com.traffic.controller.dto.TrafficStateResponseDTO;
 import com.traffic.controller.mapper.TrafficMapper;
-import com.traffic.controller.model.Direction;
-import com.traffic.controller.model.LightState;
+import com.traffic.controller.model.LightTypes;
+import com.traffic.controller.model.ListOfDirection;
 import com.traffic.controller.service.TrafficLightService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,19 +34,19 @@ public class TrafficLightServiceTest {
 
     @Test
     void testInitialLightsState() {
-        var lights = service.getLights();
-        assertEquals(LightState.RED, lights.get(Direction.NORTH).getState());
-        assertEquals(LightState.RED, lights.get(Direction.SOUTH).getState());
-        assertEquals(LightState.RED, lights.get(Direction.EAST).getState());
-        assertEquals(LightState.RED, lights.get(Direction.WEST).getState());
+        var lights = service.getLightDetails();
+        assertEquals(LightTypes.RED, lights.get(ListOfDirection.NORTH).getState());
+        assertEquals(LightTypes.RED, lights.get(ListOfDirection.SOUTH).getState());
+        assertEquals(LightTypes.RED, lights.get(ListOfDirection.EAST).getState());
+        assertEquals(LightTypes.RED, lights.get(ListOfDirection.WEST).getState());
     }
 
     @Test
     void testChangeLightSuccessfully() {
-        service.changeLight(Direction.NORTH, LightState.GREEN);
+        service.changeLight(ListOfDirection.NORTH, LightTypes.GREEN);
         assertEquals(
-                LightState.GREEN,
-                service.getLights().get(Direction.NORTH).getState()
+                LightTypes.GREEN,
+                service.getLightDetails().get(ListOfDirection.NORTH).getState()
         );
     }
 
@@ -60,7 +59,7 @@ public class TrafficLightServiceTest {
     @Test
     void testResumeSystem() {
         service.pauseSystem();
-        service.resumeSystem();
+        service.resumeTrafficLightSystem();
         assertFalse(service.isPaused());
     }
 
@@ -69,27 +68,27 @@ public class TrafficLightServiceTest {
         service.pauseSystem();
         IllegalStateException exception =
                 assertThrows(IllegalStateException.class, () ->
-                        service.changeLight(Direction.NORTH, LightState.GREEN)
+                        service.changeLight(ListOfDirection.NORTH, LightTypes.GREEN)
                 );
         assertEquals("System is paused now", exception.getMessage());
     }
 
     @Test
     void testConflictValidationNorthSouth() {
-        service.changeLight(Direction.EAST, LightState.GREEN);
+        service.changeLight(ListOfDirection.EAST, LightTypes.GREEN);
         IllegalStateException exception =
                 assertThrows(IllegalStateException.class, () ->
-                        service.changeLight(Direction.NORTH, LightState.GREEN)
+                        service.changeLight(ListOfDirection.NORTH, LightTypes.GREEN)
                 );
         assertEquals("Conflict detected for EAST/WEST GREEN", exception.getMessage());
     }
 
     @Test
     void testConflictValidationEastWest() {
-        service.changeLight(Direction.NORTH, LightState.GREEN);
+        service.changeLight(ListOfDirection.NORTH, LightTypes.GREEN);
         IllegalStateException exception =
                 assertThrows(IllegalStateException.class, () ->
-                        service.changeLight(Direction.EAST, LightState.GREEN)
+                        service.changeLight(ListOfDirection.EAST, LightTypes.GREEN)
                 );
         assertEquals("Conflict detected for NORTH/SOUTH GREEN", exception.getMessage());
     }
@@ -98,7 +97,7 @@ public class TrafficLightServiceTest {
     void testGetCurrentState() {
         when(mapper.toTrafficStateDTO(any()))
                 .thenReturn(new TrafficStateResponseDTO());
-        List<TrafficStateResponseDTO> result = service.getCurrentState();
+        List<TrafficStateResponseDTO> result = service.getCurrentStateDirections();
         assertEquals(4, result.size());
         verify(mapper, times(4))
                 .toTrafficStateDTO(any());
@@ -108,7 +107,7 @@ public class TrafficLightServiceTest {
     void testGetHistory() {
         when(mapper.toHistoryDTO(any()))
                 .thenReturn(new HistoryResponseDTO("test", System.currentTimeMillis()));
-        List<HistoryResponseDTO> history = service.getHistory();
+        List<HistoryResponseDTO> history = service.getHistoryList();
         assertFalse(history.isEmpty());
         verify(mapper, atLeastOnce())
                 .toHistoryDTO(any());

@@ -1,15 +1,11 @@
+/*
 package com.traffic.controller.service;
 
 import com.traffic.controller.model.Direction;
 import com.traffic.controller.model.LightState;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -52,4 +48,4 @@ public class TrafficScheduler {
             e.printStackTrace();
         }
     }
-}
+}*/

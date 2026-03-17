@@ -1,7 +1,8 @@
 package com.traffic.controller;
 
 import com.traffic.controller.service.TrafficLightService;
-import com.traffic.controller.service.TrafficScheduler;
+
+import com.traffic.controller.service.TrafficSchedulers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +19,7 @@ class TrafficSchedulerTest {
     private TrafficLightService service;
 
     @Autowired
-    private TrafficScheduler scheduler;
+    private TrafficSchedulers scheduler;
 
     @Test
     void testSchedulerRuns() throws Exception {
